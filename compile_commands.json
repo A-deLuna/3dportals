@@ -1,0 +1,22 @@
+[
+  { "directory": "/home/tony/portals",
+    "file": "main.cc",
+    "output": "/tmp/main-7107c6.o",
+    "arguments": ["/usr/lib/llvm-6.0/bin/clang", "-xc++", "main.cc", "--driver-mode=g++", "--target=x86_64-pc-linux-gnu"]},
+  { "directory": "/home/tony/portals",
+    "file": "box.cc",
+    "output": "/tmp/box-7107c6.o",
+    "arguments": ["/usr/lib/llvm-6.0/bin/clang", "-xc++", "box.cc", "--driver-mode=g++", "--target=x86_64-pc-linux-gnu"]},
+  { "directory": "/home/tony/portals",
+    "file": "camera.cc",
+    "output": "/tmp/camera-7107c6.o",
+    "arguments": ["/usr/lib/llvm-6.0/bin/clang", "-xc++", "camera.cc", "--driver-mode=g++", "--target=x86_64-pc-linux-gnu"]},
+  { "directory": "/home/tony/portals",
+    "file": "ground.cc",
+    "output": "/tmp/ground-7107c6.o",
+    "arguments": ["/usr/lib/llvm-6.0/bin/clang", "-xc++", "ground.cc", "--driver-mode=g++", "--target=x86_64-pc-linux-gnu"]},
+  { "directory": "/home/tony/portals",
+    "file": "shaders.cc.cc",
+    "output": "/tmp/shaders.cc-7107c6.o",
+    "arguments": ["/usr/lib/llvm-6.0/bin/clang", "-xc++", "shaders.cc.cc", "--driver-mode=g++", "--target=x86_64-pc-linux-gnu"]}
+]
