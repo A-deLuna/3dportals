@@ -1,12 +1,14 @@
-#include <glm/detail/type_vec.hpp>
+#include "wall.h"
 #define GLEW_STATIC
 #include "GL/glew.h"
 #include "shaders.h"
 #include "stb_image.h"
 #include "camera.h"
-#include "glm/gtc/type_ptr.hpp"
+#include <glm/gtc/type_ptr.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
-#include "glm/gtx/transform.hpp"
+#include <glm/gtx/transform.hpp>
+#include "wall.h"
+#include "transform.h"
 
 // clang-format off
 static float positions[] = {
@@ -31,12 +33,6 @@ static GLuint indices[] = {
 
 static size_t n_indices = sizeof(indices) / sizeof(indices[0]);
 
-struct object {
-  glm::vec3 position; 
-  glm::vec3 scale; 
-  glm::quat rotation; 
-};
-static object object = {};
 
 static GLuint vao;
 static GLuint program;
@@ -71,7 +67,7 @@ static void setupWallVao() {
 
   GLuint tex;
   glGenTextures(1, &tex);
-  glActiveTexture(GL_TEXTURE0);
+  glActiveTexture(GL_TEXTURE1);
   glBindTexture(GL_TEXTURE_2D, tex);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -110,15 +106,15 @@ void setupWall() {
   setupShader();
 }
 
-void drawWall() {
+void drawWall(Transform const* transform) {
   glUseProgram(program);
   glBindVertexArray(vao);
 
-  glm::mat4 mvp = camera_getVP() * glm::translate(object.position) *
-                  glm::scale(glm::vec3(5.f, 5.f, 5.f));
+  glm::mat4 mvp = camera_getVP() * glm::translate(transform->position) *
+                  glm::scale(transform->scale);
   glUniformMatrix4fv(uniforms.mvp, 1, GL_FALSE, glm::value_ptr(mvp));
   glUniform1f(uniforms.textureScale, 5.f);
 
-  glUniform1i(uniforms.texture, 0);
+  glUniform1i(uniforms.texture, 1);
   glDrawElements(GL_TRIANGLES, n_indices, GL_UNSIGNED_INT, NULL);
 }

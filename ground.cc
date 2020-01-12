@@ -9,6 +9,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/transform.hpp"
 #include "stb_image.h"
+#include "transform.h"
 
 // clang-format off
 static float positions[] = {
@@ -108,8 +109,8 @@ void drawGround(Transform const* transform) {
   glUseProgram(program);
   glBindVertexArray(vao);
 
-  glm::mat4 mvp = camera_getVP() * glm::translate(glm::vec3(0.f, -1.f, -1.f)) *
-                  glm::scale(glm::vec3(5.f, 5.f, 5.f));
+  glm::mat4 mvp = camera_getVP() * glm::translate(transform->position) *
+                  glm::scale(transform->scale);
   glUniformMatrix4fv(uniforms.mvp, 1, GL_FALSE, glm::value_ptr(mvp));
   glUniform1f(uniforms.textureScale, 5.f);
 

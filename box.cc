@@ -7,6 +7,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/transform.hpp"
 #include "box.h"
+#include "transform.h"
 
 // clang-format off
 float colors[] = {
@@ -139,19 +140,7 @@ void drawCube(Transform const* transform) {
   glBindVertexArray(vao);
 
   glm::mat4 vp = camera_getVP();
-  glm::mat4 mvp = vp * glm::translate(glm::vec3(3.f, -3.f, -5.f));
-  glUniformMatrix4fv(uniforms.mvp, 1, GL_FALSE, glm::value_ptr(mvp));
-  glDrawElements(GL_TRIANGLES, n_indices, GL_UNSIGNED_INT, NULL);
-
-  mvp = vp * glm::translate(glm::vec3(-3.f, -3.f, -5.f));
-  glUniformMatrix4fv(uniforms.mvp, 1, GL_FALSE, glm::value_ptr(mvp));
-  glDrawElements(GL_TRIANGLES, n_indices, GL_UNSIGNED_INT, NULL);
-
-  mvp = vp * glm::translate(glm::vec3(-3.f, 3.f, -5.f));
-  glUniformMatrix4fv(uniforms.mvp, 1, GL_FALSE, glm::value_ptr(mvp));
-  glDrawElements(GL_TRIANGLES, n_indices, GL_UNSIGNED_INT, NULL);
-
-  mvp = vp * glm::translate(glm::vec3(3.f, 3.f, -5.f));
+  glm::mat4 mvp = vp * glm::translate(transform->position);
   glUniformMatrix4fv(uniforms.mvp, 1, GL_FALSE, glm::value_ptr(mvp));
   glDrawElements(GL_TRIANGLES, n_indices, GL_UNSIGNED_INT, NULL);
 }

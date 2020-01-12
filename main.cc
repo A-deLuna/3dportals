@@ -8,8 +8,9 @@
 #include "GLFW/glfw3.h"
 #include "box.h"
 #include "camera.h"
-#include "stdio.h"
 #include "ground.h"
+#include "stdio.h"
+#include "wall.h"
 
 GLFWwindow* window;
 
@@ -35,25 +36,25 @@ void init() {
 }
 
 struct Transform {
-  glm::vec3 position; 
-  glm::vec3 scale; 
-  glm::quat rotation; 
+  glm::vec3 position;
+  glm::vec3 scale;
+  glm::quat rotation;
 };
 
 static uint32_t next_object_id = 0;
-static Transform transforms [1000];
+static Transform transforms[1000];
 
 uint32_t createTransform() {
-  transforms[next_object_id].scale = glm::vec3(1,1,1);
+  transforms[next_object_id].scale = glm::vec3(1, 1, 1);
   transforms[next_object_id].rotation.w = 1;
   return next_object_id++;
-
-} 
+}
 
 int main() {
   init();
   setupCube();
   setupGround();
+  //setupWall();
   glClearColor(0.8f, .8f, .8f, 1.f);
 
   glEnable(GL_CULL_FACE);
@@ -64,6 +65,16 @@ int main() {
 
   initCamera();
 
+  uint32_t cube_1 = createTransform();
+  transforms[cube_1].position = glm::vec3(0, 1, -1);
+
+  uint32_t ground = createTransform();
+  transforms[ground].position = glm::vec3(0, -2, -1);
+  transforms[ground].scale = glm::vec3(5, 1, 5);
+
+  uint32_t wall_1 = createTransform();
+  transforms[ground].position = glm::vec3(0, .5, -1);
+
   while (!glfwWindowShouldClose(window)) {
     // TODO have a real input system instead of passing window* all over the
     // place.
@@ -71,16 +82,11 @@ int main() {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    uint32_t cube_1 = createTransform();
-    transforms[cube_1].position = glm::vec3(0,1,-1);
-
     drawCube(&transforms[cube_1]);
 
-    uint32_t ground = createTransform();
-    transforms[ground].position = glm::vec3(0,-1,-1);
-    transforms[ground].scale = glm::vec3(5,1,5);
-
     drawGround(&transforms[ground]);
+
+    //drawWall(&transforms[wall_1]);
 
     glfwSwapBuffers(window);
 

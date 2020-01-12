@@ -60,7 +60,6 @@ void updateCamera(GLFWwindow* window) {
 
   if (previousMousePosition == glm::vec2(-1,-1)) {
     previousMousePosition = currentMousePosition;
-    printf("overriding previousMousePosition\n");
   }
 
   glm::vec2 mouseDelta = currentMousePosition - previousMousePosition;
@@ -69,7 +68,6 @@ void updateCamera(GLFWwindow* window) {
   if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
     camera.yaw += -mouseDelta.x * .1f;
     camera.pitch += mouseDelta.y * .1f;
-    printf("pitch: %f, yaw: %f\n", camera.pitch, camera.yaw);
 
     camera.rotation =
         glm::angleAxis(glm::radians(camera.yaw), glm::vec3(0,1,0));
