@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include "wall.h"
 #include "transform.h"
 
@@ -78,9 +79,9 @@ static void setupWallVao() {
 
   int width, height, nChannels;
   stbi_set_flip_vertically_on_load(true);
-  unsigned char* data = stbi_load("assets/FloorTile/FloorTileDiffuse.png",
+  unsigned char* data = stbi_load("assets/Wall/diffuse.jpg",
                                   &width, &height, &nChannels, 0);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA,
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
                GL_UNSIGNED_BYTE, data);
   stbi_image_free(data);
   glGenerateMipmap(GL_TEXTURE_2D);
@@ -111,9 +112,9 @@ void drawWall(Transform const* transform) {
   glBindVertexArray(vao);
 
   glm::mat4 mvp = camera_getVP() * glm::translate(transform->position) *
-                  glm::scale(transform->scale);
+                  glm::scale(transform->scale) * glm::toMat4(transform->rotation);
   glUniformMatrix4fv(uniforms.mvp, 1, GL_FALSE, glm::value_ptr(mvp));
-  glUniform1f(uniforms.textureScale, 5.f);
+  glUniform2f(uniforms.textureScale, 50.f, 7.f);
 
   glUniform1i(uniforms.texture, 1);
   glDrawElements(GL_TRIANGLES, n_indices, GL_UNSIGNED_INT, NULL);

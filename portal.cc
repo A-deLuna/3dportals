@@ -1,22 +1,21 @@
-#include "ground.h"
 #define GLEW_STATIC
-
 #include "GL/glew.h"
 #include "shaders.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "camera.h"
-#include "glm/gtc/type_ptr.hpp"
-#define GLM_ENABLE_EXPERIMENTAL
-#include "glm/gtx/transform.hpp"
 #include "stb_image.h"
+#include "camera.h"
+#include <glm/gtc/type_ptr.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/transform.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include "portal.h"
 #include "transform.h"
 
 // clang-format off
 static float positions[] = {
-  -1.f, 0.f, -1.f,
-  -1.f, 0.f,  1.f,
-   1.f, 0.f, -1.f,
-   1.f, 0.f,  1.f,
+  -1.f, -2.f, 0.f,
+  -1.f,  2.f, 0.f,
+   1.f, -2.f, 0.f,
+   1.f,  2.f, 0.f,
 };
 
 static float texture_coords[] = {
@@ -34,10 +33,11 @@ static GLuint indices[] = {
 
 static size_t n_indices = sizeof(indices) / sizeof(indices[0]);
 
+
 static GLuint vao;
 static GLuint program;
 
-static void setupGroundVao() {
+static void setupPortalVao() {
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
 
@@ -52,12 +52,13 @@ static void setupGroundVao() {
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
                GL_STATIC_DRAW);
 
-  // bind bosition buffer
+  // bind position buffer
   glBindBuffer(GL_ARRAY_BUFFER, positionBuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
   glEnableVertexAttribArray(0);
 
+  // bind texture coords
   glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(texture_coords), texture_coords,
                GL_STATIC_DRAW);
@@ -66,7 +67,7 @@ static void setupGroundVao() {
 
   GLuint tex;
   glGenTextures(1, &tex);
-  glActiveTexture(GL_TEXTURE0);
+  glActiveTexture(GL_TEXTURE2);
   glBindTexture(GL_TEXTURE_2D, tex);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -77,9 +78,9 @@ static void setupGroundVao() {
 
   int width, height, nChannels;
   stbi_set_flip_vertically_on_load(true);
-  unsigned char* data = stbi_load("assets/FloorTile/FloorTileDiffuse.png",
+  unsigned char* data = stbi_load("assets/Portal.png",
                                   &width, &height, &nChannels, 0);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA,
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
                GL_UNSIGNED_BYTE, data);
   stbi_image_free(data);
   glGenerateMipmap(GL_TEXTURE_2D);
@@ -100,20 +101,21 @@ static void setupShader() {
   uniforms.textureScale = glGetUniformLocation(program, "textureScale");
 }
 
-void setupGround() {
-  setupGroundVao();
+void setupPortal() {
+  setupPortalVao();
   setupShader();
 }
 
-void drawGround(Transform const* transform) {
+void drawPortal(Transform const* transform) {
   glUseProgram(program);
   glBindVertexArray(vao);
 
   glm::mat4 mvp = camera_getVP() * glm::translate(transform->position) *
-                  glm::scale(transform->scale);
+                  glm::scale(transform->scale) * glm::toMat4(transform->rotation);
   glUniformMatrix4fv(uniforms.mvp, 1, GL_FALSE, glm::value_ptr(mvp));
-  glUniform2f(uniforms.textureScale, 5.f, 5.f);
+  glUniform2f(uniforms.textureScale, 1.f, 1.f);
 
-  glUniform1i(uniforms.texture, 0);
+  glUniform1i(uniforms.texture, 2);
+
   glDrawElements(GL_TRIANGLES, n_indices, GL_UNSIGNED_INT, NULL);
 }

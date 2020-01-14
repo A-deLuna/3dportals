@@ -37,30 +37,30 @@ float colors[] = {
   1.0,0.5,0.5, // pink
 };
 static float positions[] = {
-  -0.5f,-0.5f,-0.5f, // 0  0 left bot back green
-  -0.5f,-0.5f,-0.5f, // 0  1 left bot back blue
-  -0.5f,-0.5f,-0.5f, // 0  2 left bot back white
-  -0.5f,-0.5f, 0.5f, // 1  3 left bot front green
-  -0.5f,-0.5f, 0.5f, // 1  4 left bot front yellow
-  -0.5f,-0.5f, 0.5f, // 1  5 left bot front white
-  -0.5f, 0.5f,-0.5f, // 2  6 left top back green
-  -0.5f, 0.5f,-0.5f, // 2  7 left top back blue
-  -0.5f, 0.5f,-0.5f, // 2  8 left top back pink
-  -0.5f, 0.5f, 0.5f, // 3  9 left top front green
-  -0.5f, 0.5f, 0.5f, // 3 10 left top front yellow
-  -0.5f, 0.5f, 0.5f, // 3 11 left top front pink
-   0.5f,-0.5f,-0.5f, // 4 12 right bot back red
-   0.5f,-0.5f,-0.5f, // 4 13 right bot back blue
-   0.5f,-0.5f,-0.5f, // 4 14 right bot back white
-   0.5f,-0.5f, 0.5f, // 5 15 right bot front red
-   0.5f,-0.5f, 0.5f, // 5 16 right bot front yellow
-   0.5f,-0.5f, 0.5f, // 5 17 right bot front white
-   0.5f, 0.5f,-0.5f, // 6 18 right top back red
-   0.5f, 0.5f,-0.5f, // 6 19 right top back blue
-   0.5f, 0.5f,-0.5f, // 6 20 right top back pink
-   0.5f, 0.5f, 0.5f, // 7 21 right top front red
-   0.5f, 0.5f, 0.5f, // 7 22 right top front yellow
-   0.5f, 0.5f, 0.5f, // 7 23 right top front pink
+  -1.f,-1.f,-1.f, // 0  0 left bot back green
+  -1.f,-1.f,-1.f, // 0  1 left bot back blue
+  -1.f,-1.f,-1.f, // 0  2 left bot back white
+  -1.f,-1.f, 1.f, // 1  3 left bot front green
+  -1.f,-1.f, 1.f, // 1  4 left bot front yellow
+  -1.f,-1.f, 1.f, // 1  5 left bot front white
+  -1.f, 1.f,-1.f, // 2  6 left top back green
+  -1.f, 1.f,-1.f, // 2  7 left top back blue
+  -1.f, 1.f,-1.f, // 2  8 left top back pink
+  -1.f, 1.f, 1.f, // 3  9 left top front green
+  -1.f, 1.f, 1.f, // 3 10 left top front yellow
+  -1.f, 1.f, 1.f, // 3 11 left top front pink
+   1.f,-1.f,-1.f, // 4 12 right bot back red
+   1.f,-1.f,-1.f, // 4 13 right bot back blue
+   1.f,-1.f,-1.f, // 4 14 right bot back white
+   1.f,-1.f, 1.f, // 5 15 right bot front red
+   1.f,-1.f, 1.f, // 5 16 right bot front yellow
+   1.f,-1.f, 1.f, // 5 17 right bot front white
+   1.f, 1.f,-1.f, // 6 18 right top back red
+   1.f, 1.f,-1.f, // 6 19 right top back blue
+   1.f, 1.f,-1.f, // 6 20 right top back pink
+   1.f, 1.f, 1.f, // 7 21 right top front red
+   1.f, 1.f, 1.f, // 7 22 right top front yellow
+   1.f, 1.f, 1.f, // 7 23 right top front pink
 };
 
 static GLuint indices[] = {
