@@ -132,12 +132,12 @@ int main() {
   scene.push_back(wall_1);
 
   uint32_t portal_1 = createTransform();
-  transforms[portal_1].position = glm::vec3(0, 2.f, -9.98f);
+  transforms[portal_1].position = glm::vec3(0, 2.f, -9.999f);
   transforms[portal_1].rotation =
       glm::angleAxis(glm::radians(180.f), glm::vec3(0.f, 1.f, 0.f));
 
   uint32_t portal_2 = createTransform();
-  transforms[portal_2].position = glm::vec3(-24, 2.f, -9.98f);
+  transforms[portal_2].position = glm::vec3(-24, 2.f, -9.999f);
   transforms[portal_2].rotation =
       glm::angleAxis(glm::radians(180.f), glm::vec3(0.f, 1.f, 0.f));
 
@@ -145,7 +145,7 @@ int main() {
   while (!glfwWindowShouldClose(window)) {
     // TODO have a real input system instead of passing window* all over the
     // place.
-    updateCamera(window);
+    updateCamera(window, &transforms[portal_1], &transforms[portal_2]);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
