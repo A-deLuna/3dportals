@@ -155,7 +155,10 @@ int main() {
     glEnable(GL_STENCIL_TEST);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     glStencilFunc(GL_ALWAYS, 1, 0xff);
+
+    // draw both portals before clearing depth buffer
     drawPortal(&transforms[portal_1]);
+    drawPortal(&transforms[portal_2]);
     // stop writing to stencil buffer
     // only draw where stencil value equal to 1
     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
@@ -181,7 +184,6 @@ int main() {
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     glStencilFunc(GL_ALWAYS, 1, 0xff);
 
-    drawPortal(&transforms[portal_2]);
 
     // stop writing to stencil buffer
     // only draw where stencil value equal to 1
