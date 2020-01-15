@@ -1,6 +1,7 @@
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/trigonometric.hpp>
+#include <vector>
 #define GLM_ENABLE_EXPERIMENTAL
 #define GLEW_STATIC
 
@@ -17,6 +18,7 @@
 #include "transform.h"
 
 GLFWwindow* window;
+std::vector<uint32_t> scene(100);
 
 void init() {
   glfwInit();
@@ -46,6 +48,7 @@ void init() {
 
 static uint32_t next_object_id = 0;
 static Transform transforms[1000];
+static void(*drawFns[1000])(Transform const*);
 
 uint32_t createTransform() {
   transforms[next_object_id].scale = glm::vec3(1, 1, 1);
@@ -75,13 +78,20 @@ void moveCameraToBackOfPortal(Transform* transform, uint32_t frontPortal, uint32
 
 }
 
+void drawScene() {
+  for (uint32_t id : scene) {
+    drawFns[id](&transforms[id]);
+  }
+}
+
 int main() {
   init();
   setupCube();
   setupGround();
   setupWall();
   setupPortal();
-  glClearColor(0.8f, .8f, .8f, 1.f);
+
+  glClearColor(0.0f, .0f, .0f, 1.f);
 
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
@@ -93,18 +103,33 @@ int main() {
 
   uint32_t cube_1 = createTransform();
   transforms[cube_1].position = glm::vec3(-1, 1.f, -2);
+  drawFns[cube_1] = drawCube;
+  scene.push_back(cube_1);
+
   uint32_t cube_2 = createTransform();
   transforms[cube_2].position = glm::vec3(3, 1.f, -2);
+  drawFns[cube_2] = drawCube;
+  scene.push_back(cube_2);
+
+  uint32_t cube_3 = createTransform();
+  transforms[cube_3].position = glm::vec3(-25, 1.f, 10);
+  transforms[cube_3].rotation = glm::angleAxis(glm::radians(90.f), glm::normalize(glm::vec3(1,1,1)));
+  drawFns[cube_3] = drawCube;
+  scene.push_back(cube_3);
 
   uint32_t ground = createTransform();
   transforms[ground].position = glm::vec3(0, 0, -1);
   transforms[ground].scale = glm::vec3(50, 1, 50);
+  drawFns[ground] = drawGround;
+  scene.push_back(ground);
 
   uint32_t wall_1 = createTransform();
   transforms[wall_1].position = glm::vec3(0, .5, -10.f);
   transforms[wall_1].scale = glm::vec3(50, 7, 1);
   transforms[wall_1].rotation =
       glm::angleAxis(glm::radians(180.f), glm::vec3(0.f, 1.f, 0.f));
+  drawFns[wall_1] = drawWall;
+  scene.push_back(wall_1);
 
   uint32_t portal_1 = createTransform();
   transforms[portal_1].position = glm::vec3(0, 2.f, -9.98f);
@@ -124,13 +149,32 @@ int main() {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-    // draw from player camera
-    drawCube(&transforms[cube_1]);
-    drawCube(&transforms[cube_2]);
-    drawGround(&transforms[ground]);
-    drawWall(&transforms[wall_1]);
+    drawScene();
 
+    // write to stencil buffer
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilFunc(GL_ALWAYS, 1, 0xff);
     drawPortal(&transforms[portal_1]);
+    // stop writing to stencil buffer
+    // only draw where stencil value equal to 1
+    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    glStencilFunc(GL_EQUAL, 1, 0xff);
+
+    // clear depth buffer so that portals are rendered
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    // Grab camera position
+    Transform cachedCameraTrans;
+    getCameraTransform(&cachedCameraTrans);
+    moveCameraToBackOfPortal(&cachedCameraTrans, portal_1, portal_2);
+
+    drawScene();
+    // clear stencil buffer
+    glClear(GL_STENCIL_BUFFER_BIT);
+
+    // move camera back to original position
+    setCameraTransform(&cachedCameraTrans);
 
     // write to stencil buffer
     glEnable(GL_STENCIL_TEST);
@@ -147,16 +191,9 @@ int main() {
     // clear depth buffer so that portals are rendered
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    // Grab camera position
-    Transform cachedCameraTrans;
-    getCameraTransform(&cachedCameraTrans);
     moveCameraToBackOfPortal(&cachedCameraTrans, portal_2, portal_1);
 
-    // re render scene.
-    drawCube(&transforms[cube_1]);
-    drawCube(&transforms[cube_2]);
-    drawGround(&transforms[ground]);
-    drawWall(&transforms[wall_1]);
+    drawScene();
 
     // disable stenil test
     glDisable(GL_STENCIL_TEST);

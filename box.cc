@@ -6,6 +6,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/transform.hpp"
+#include "glm/gtx/quaternion.hpp"
 #include "box.h"
 #include "transform.h"
 
@@ -140,7 +141,7 @@ void drawCube(Transform const* transform) {
   glBindVertexArray(vao);
 
   glm::mat4 vp = camera_getVP();
-  glm::mat4 mvp = vp * glm::translate(transform->position);
+  glm::mat4 mvp = vp * glm::translate(transform->position) * glm::toMat4(transform->rotation);
   glUniformMatrix4fv(uniforms.mvp, 1, GL_FALSE, glm::value_ptr(mvp));
   glDrawElements(GL_TRIANGLES, n_indices, GL_UNSIGNED_INT, NULL);
 }
